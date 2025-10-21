@@ -1,180 +1,146 @@
-/*Size episode preview images in a more compact way*/
+/* --- Episode Grid Layout for Jellyfin 10.11.0 --- */
 
-.childrenItemsContainer.itemsContainer.padded-right.vertical-list {
+/* Updated main container selector for the grid */
+#listChildrenCollapsible .itemsContainer.vertical-list {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-columns: repeat(4, 1fr); /* Default to 4 columns */
+  gap: 1.5em; /* Add some gap between items */
 }
 
-@media all and (min-width: 2000px) {
-  .listItemImage-large {
-    height: 9.5vw;
-  }
-}
-
+/* Responsive adjustments for column count */
 @media all and (max-width: 2000px) {
-  .childrenItemsContainer.itemsContainer.padded-right.vertical-list {
-    grid-template-columns: 1fr 1fr 1fr;
+  #listChildrenCollapsible .itemsContainer.vertical-list {
+    grid-template-columns: repeat(3, 1fr); /* 3 columns for medium screens */
   }
 }
 
 @media all and (max-width: 1000px) {
-  .childrenItemsContainer.itemsContainer.padded-right.vertical-list {
-    grid-template-columns: 1fr 1fr;
+  #listChildrenCollapsible .itemsContainer.vertical-list {
+    grid-template-columns: repeat(2, 1fr); /* 2 columns for smaller screens */
   }
 }
 
-.layout-mobile
-  .childrenItemsContainer.itemsContainer.padded-right.vertical-list {
-  grid-template-columns: 1fr;
+/* Mobile specific: Force 1 column and adjust padding/margins */
+.layout-mobile #listChildrenCollapsible .itemsContainer.vertical-list {
+  grid-template-columns: 1fr; /* 1 column on mobile */
+  padding-right: 0; /* Remove potential right padding */
+  gap: 1em;
+}
+
+/* Individual item styling */
+#itemDetailPage .listItem {
+  position: relative;
+  height: fit-content; /* Let content determine height */
+  overflow: hidden;
+  margin-bottom: 0; /* Grid gap handles spacing */
+  border-radius: var(--rounding, 8px); /* Use theme rounding or default */
+  padding: 0; /* Remove default padding */
+  background-color: rgba(var(--background-color-rgb, 0, 0, 0), 0.2); /* Slight background tint */
 }
 
 #itemDetailPage .listItem-content {
-  border-radius: var(--rounding);
+  border-radius: var(--rounding, 8px);
   overflow: hidden;
   transition: background 0.15s ease-in-out;
-  flex-flow: column;
-  -webkit-transition: background 0.15s ease-in-out;
-  -moz-transition: background 0.15s ease-in-out;
-  -ms-transition: background 0.15s ease-in-out;
-  -o-transition: background 0.15s ease-in-out;
+  display: flex; /* Use flex for column layout */
+  flex-direction: column; /* Stack image and text vertically */
+  height: 100%; /* Fill the grid item */
+  background: none; /* Reset background, handled by .listItem now */
 }
 
+/* Episode Image */
 .listItemImage.listItemImage-large {
   width: 100%;
   margin: 0;
+  height: auto; /* Let aspect ratio determine height */
+  aspect-ratio: 16 / 9; /* Common video aspect ratio */
+  position: relative; /* Needed for overlay buttons */
 }
 
-.listItem-overview.listItemBodyText {
-  height: 5.5em !important;
-  font-size: 1em !important;
+/* Episode Text Body */
+.listItemBody.itemAction {
+  padding: 0.75em; /* Add padding around text */
+  z-index: 1;
 }
 
-.layout-mobile .listItemImageButton-icon {
-  padding: 0;
-  top: 0.34em;
-  position: absolute !important;
-  font-size: 1.5em !important;
-  right: 3em;
+/* Episode Title */
+.listItemBodyText:first-of-type { /* Target the title specifically */
+    font-weight: bold;
+    margin-bottom: 0.25em;
 }
 
-#itemDetailPage .listItem {
-  position: relative;
-  height: -webkit-fit-content;
-  height: -moz-fit-content;
-  height: fit-content;
+/* Episode Overview */
+.secondary.listItem-overview.listItemBodyText {
+  font-size: 0.9em !important; /* Slightly smaller font */
+  height: auto; /* Remove fixed height */
+  margin: 0.5em 0 0 0;
   overflow: hidden;
-  margin-bottom: 1.5rem;
-  border-radius: var(--rounding);
-  padding: .5em;
+  display: -webkit-box;
+  -webkit-line-clamp: 3; /* Limit to 3 lines */
+  -webkit-box-orient: vertical;
+  text-align: justify;
 }
 
-#itemDetailPage .secondary.listItem-overview.listItemBodyText {
-  height: 100%;
-  margin: 0;
+/* Hide the bottom overview that duplicates info */
+.listItem-bottomoverview.secondary {
+    display: none;
 }
 
-.listItem[data-mediatype="Audio"] {
-  padding: 0 1em;
-  border-radius: var(--rounding) !important;
-  -webkit-border-radius: var(--rounding) !important;
-  -moz-border-radius: var(--rounding) !important;
-  -ms-border-radius: var(--rounding) !important;
-  -o-border-radius: var(--rounding) !important;
+/* --- Mobile Specific Overrides --- */
+
+.layout-mobile #itemDetailPage .listItemImage.listItemImage-large {
+  aspect-ratio: auto; /* Let image decide on mobile? Or keep 16/9? Test needed. */
 }
 
-.layout-mobile #itemDetailPage .listItemImageButton {
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: -1;
-  -webkit-backdrop-filter: blur(4px);
-  backdrop-filter: blur(4px);
-  color: white;
-}
-
-.layout-mobile .listItemIndicators {
-  right: 0;
-  top: 0;
-  z-index: 0;
-}
-
-.layout-mobile .playedIndicator {
-  width: 2em;
-  height: 2em;
-  font-size: 1.2rem;
-  position: absolute;
-  top: 0;
-  right: 0;
-  box-shadow: none;
-}
-
-.layout-mobile .listItemIndicators .indicatorIcon.check {
-  z-index: 2;
-}
-
-.layout-mobile .listItemBodyText {
-  max-width: 36vw;
-}
-
-@media all and (min-width: 50em) {
-  .layout-mobile .listItemBodyText {
-    max-width: 100%;
-  }
-}
-
-.layout-mobile .listItem .playedIndicator {
-  background: transparent !important;
-  color: rgba(var(--accent));
-}
-
-.layout-mobile .listItemImage {
-  height: 100% !important;
-  width: 100% !important;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  overflow: hidden;
-  border-radius: var(--rounding) !important;
-}
-
-.layout-mobile  .listItemImageButton:hover {
-    transform: scale(1);
-}
-
+/* Adjust button positioning on mobile if needed */
 .layout-mobile .listViewUserDataButtons {
   position: absolute;
-  right: 0;
-  top: 1.25em;
-  padding-right: 1em;
+  top: 0.5em;
+  right: 0.5em;
+  background-color: rgba(0, 0, 0, 0.5); /* Add background for visibility */
+  border-radius: 5px;
+  padding: 2px;
 }
 
 .layout-mobile .listItemButton {
-  padding: 0 0.556em !important;
+  padding: 0 0.3em !important;
+  color: white; /* Ensure buttons are visible */
 }
 
-.layout-mobile #itemDetailPage .listItem-content {
-  -webkit-backdrop-filter: none;
-  backdrop-filter: none;
-  align-items: flex-start;
+.layout-mobile .listItemImageButton {
+    /* Play button in center */
+   position: absolute;
+   top: 50%;
+   left: 50%;
+   transform: translate(-50%, -50%);
+   font-size: 2.5em !important;
+   background-color: rgba(0,0,0,0.6);
+   border-radius: 50%;
+   width: 1.5em;
+   height: 1.5em;
+   line-height: 1.5em; /* Center icon vertically */
 }
 
-.layout-mobile #itemDetailPage .listItem-content {
-  background: none !important;
-  position: unset;
+.layout-mobile .listItemIndicators {
+  /* Position indicators top right */
+  top: 0.5em;
+  right: 0.5em;
+  z-index: 2; /* Above buttons */
+}
+
+.layout-mobile .playedIndicator {
+  width: 1.8em;
+  height: 1.8em;
+  font-size: 1rem;
+}
+
+.layout-mobile .listItem .playedIndicator {
+  background: rgba(var(--accent-rgb, 0, 160, 0), 0.8) !important; /* Use accent color */
   color: white;
 }
 
-.listItemImageButton {
-  margin: auto;
-  font-size: 1.6em !important;
-}
-.listItemBody.itemAction,
-.listItem-bottomoverview.secondary{
-  z-index: 1;
-}
-.listItem-bottomoverview.secondary{
-  text-align: justify;
-  padding: .5em;
-  margin: 0;
+/* Remove hover glow effect if it came from the other theme */
+.card-hoverable:hover .cardBox,
+.cardOverlayContainer:hover ~ .cardBox {
+    box-shadow: none;
 }
